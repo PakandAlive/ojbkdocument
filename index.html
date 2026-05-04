@@ -1,34 +1,37 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>产品说明文档</title>
+    <meta name="description" content="支持 light 与 dark 主题的 GitBook 风格产品说明文档。" />
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const keys = ["theme", "mode", "color_scheme", "color-scheme", "appearance"];
+        const value = keys.map((key) => params.get(key)).find(Boolean);
+        const normalized = value && value.toLowerCase() === "dark" ? "dark" : value && value.toLowerCase() === "light" ? "light" : "";
+        const stored = localStorage.getItem("docs-theme");
+        const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = normalized || stored || system;
+      })();
+    </script>
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <div class="app">
       <aside class="sidebar" id="sidebar">
-        <div class="brand">
-          <div class="brand-mark">D</div>
-          <div>
-            <strong>产品说明文档</strong>
-            <span>v1.0 测试版</span>
-          </div>
-        </div>
-
         <label class="search">
-          <span>搜索文档</span>
           <input id="searchInput" type="search" placeholder="输入关键词..." autocomplete="off" />
         </label>
 
         <nav class="toc" aria-label="文档目录">
-          <a href="#intro" class="active">快速开始</a>
-          <a href="#install">安装与部署</a>
-          <a href="#config">基础配置</a>
-          <a href="#workflow">使用流程</a>
-          <a href="#faq">常见问题</a>
-          <a href="#pages">发布到 GitHub Pages</a>
+          <a href="#base-url" class="active">官方 API Base URL</a>
+          <a href="#apikey">如何获取 APIKey</a>
+          <a href="#config">如何获取配置</a>
+          <a href="#cli">配置 Codex CLI / Claude Code CLI</a>
+          <a href="#vscode">如何配置 VSCode</a>
+          <a href="#openclaw">如何配置 OpenClaw【小龙虾】</a>
         </nav>
       </aside>
 
@@ -43,77 +46,265 @@
         </header>
 
         <article>
-          <section id="intro" data-title="快速开始">
-            <p class="eyebrow">指南</p>
-            <h1>快速开始</h1>
+          <section class="hero-section" id="base-url" data-title="官方 API Base URL">
+            <p class="eyebrow">DOCUMENTATION</p>
+            <h1>官方 API <em>Base URL</em></h1>
             <p class="lead">
-              这是一份 GitBook 风格的静态说明文档示例。你可以直接修改 HTML 内容，也可以后续迁移到
-              VitePress、Docusaurus 或 MkDocs Material。
+              根据客户端或工具的兼容要求，选择对应的 API Base URL 填入配置文件或配置向导。
             </p>
-            <div class="notice">
-              当前版本不需要服务器，直接打开 <code>index.html</code> 就能预览，也可以部署到 GitHub Pages。
+            <div class="hero-actions">
+              <a class="action-link action-link-primary" href="#apikey">获取 APIKey</a>
+              <a class="action-link" href="#cli">查看 CLI 配置</a>
+            </div>
+            <div class="url-list" aria-label="官方 API Base URL">
+              <div>
+                <strong>官方端点</strong>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制官方端点">https://ojbkapi.com</code>
+              </div>
+              <div>
+                <strong>Singapore 端点</strong>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制 Singapore 端点">https://codex.ooooo.codes</code>
+              </div>
+              <div>
+                <strong>Japan 端点</strong>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制 Japan 端点">https://codex.ojbk.works</code>
+              </div>
             </div>
           </section>
 
-          <section id="install" data-title="安装与部署">
-            <h2>安装与部署</h2>
-            <p>这个测试版没有依赖，不需要执行安装命令。目录结构如下：</p>
-            <pre><code>gitbook-docs-demo/
-├── index.html
-├── README.md
-└── assets/
-    ├── app.js
-    └── styles.css</code></pre>
+          <section id="apikey" data-title="如何获取 APIKey">
+            <h2>如何获取 APIKey</h2>
+            <p>进入后台后，在左侧菜单打开 <strong class="accent-text">API 密钥</strong>，然后点击 <strong class="accent-text">创建密钥</strong>。</p>
+            <figure class="doc-image">
+              <img
+                src="https://framerusercontent.com/images/DubF9OLvNjtaJgNDRRIzvWMNo.png?width=1844&height=1160"
+                alt="API 密钥创建页面截图"
+                loading="lazy"
+              />
+              <figcaption>左侧菜单 API 密钥，点击创建密钥。</figcaption>
+            </figure>
           </section>
 
-          <section id="config" data-title="基础配置">
-            <h2>基础配置</h2>
-            <p>你可以优先修改这些内容：</p>
-            <ul>
-              <li>文档标题：修改 <code>index.html</code> 里的 <code>产品说明文档</code></li>
-              <li>左侧目录：修改 <code>&lt;nav class="toc"&gt;</code> 下的链接</li>
-              <li>正文内容：按 <code>&lt;section&gt;</code> 追加章节</li>
-              <li>主题样式：修改 <code>assets/styles.css</code></li>
-            </ul>
+          <section id="config" data-title="如何获取配置">
+            <h2>如何获取配置</h2>
+            <p>创建密钥后，点击 <strong class="accent-text">使用密钥</strong>，即可获取对应的配置代码。</p>
+            <figure class="doc-image">
+              <img
+                src="https://framerusercontent.com/images/VDol0XUxppsQ0uOmO36DtlJvzM.png?width=1542&height=1166"
+                alt="使用密钥获取配置代码页面截图"
+                loading="lazy"
+              />
+              <figcaption>创建密钥后，点击使用密钥，获取配置代码。</figcaption>
+            </figure>
           </section>
 
-          <section id="workflow" data-title="使用流程">
-            <h2>使用流程</h2>
-            <ol>
-              <li>先把每个章节的大纲写清楚。</li>
-              <li>再补充截图、配置示例和常见错误说明。</li>
-              <li>最后提交到 GitHub 仓库并开启 GitHub Pages。</li>
-            </ol>
+          <section id="cli" data-title="配置 Codex CLI / Claude Code CLI">
+            <h2>配置 Codex CLI / Claude Code CLI</h2>
+            <p>
+              建议先安装并验证 CLI，再分别配置 Codex CLI 与 Claude Code CLI。两者使用的配置方式不同，不建议混在同一个配置文件里。
+            </p>
+            <div class="step-list">
+              <article class="step-card">
+                <div>
+                  <h3>准备 Node.js 环境</h3>
+                  <p>确认本机已安装 Node.js 与 npm。Claude Code 官方要求 Node.js 18 或更高版本。</p>
+                  <pre><code>node -v
+npm -v</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>安装 CLI</h3>
+                  <p>按需安装 Codex CLI 和 Claude Code CLI。</p>
+                  <pre><code># 安装 Codex CLI
+npm i -g @openai/codex
+
+# 安装 Claude Code CLI
+npm install -g @anthropic-ai/claude-code</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>验证安装结果</h3>
+                  <p>确认命令可以正常被系统识别。</p>
+                  <pre><code>codex --version
+claude --version</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>配置 Codex CLI</h3>
+                  <p>创建配置目录，打开或创建 Codex CLI 配置文件 <code>~/.codex/config.toml</code>，写入下面配置。</p>
+                  <pre><code>mkdir -p ~/.codex
+nano ~/.codex/config.toml</code></pre>
+                  <pre><code># ~/.codex/config.toml
+model_provider = "ojbk"
+model = "gpt-5.4"
+review_model = "gpt-5.4"
+model_reasoning_effort = "xhigh"
+disable_response_storage = true
+network_access = "enabled"
+windows_wsl_setup_acknowledged = true
+model_context_window = 1000000
+model_auto_compact_token_limit = 900000
+
+[model_providers.ojbk]
+name = "OJBK API"
+base_url = "https://ojbkapi.com"
+env_key = "OPENAI_API_KEY"
+wire_api = "responses"
+requires_openai_auth = true</code></pre>
+                  <p>如果要使用 Japan 或 Singapore 端点，把 <code>base_url</code> 替换成对应地址即可。</p>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>配置 Codex CLI 密钥</h3>
+                  <p>把后台创建的 API Key 配置为环境变量。临时测试可以直接在当前终端执行；长期使用建议写入你的 Shell 配置文件。</p>
+                  <pre><code>export OPENAI_API_KEY="sk-*********"</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>配置 Claude Code CLI</h3>
+                  <p>Claude Code CLI 不读取 Codex 的 TOML 配置。目标端点需要支持 Claude Code 使用的 Anthropic Messages API，或由网关完成协议转换。</p>
+                  <pre><code>export ANTHROPIC_BASE_URL="https://ojbkapi.com"
+export ANTHROPIC_AUTH_TOKEN="sk-*********"
+export ANTHROPIC_MODEL="gpt-5.4"</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>启动验证</h3>
+                  <p>任选其一运行，确认 CLI 能正常启动并访问配置好的端点。</p>
+                  <pre><code># 启动 Codex
+codex
+
+# 启动 Claude Code
+claude</code></pre>
+                </div>
+              </article>
+            </div>
           </section>
 
-          <section id="faq" data-title="常见问题">
-            <h2>常见问题</h2>
-            <details open>
-              <summary>是否需要服务器？</summary>
-              <p>不需要。GitHub Pages 会托管静态网站。</p>
-            </details>
-            <details>
-              <summary>是否可以绑定自己的域名？</summary>
-              <p>可以。GitHub Pages 支持自定义域名，后续在仓库设置里配置即可。</p>
-            </details>
-            <details>
-              <summary>是否支持搜索？</summary>
-              <p>当前示例提供前端页面内搜索。正式文档站可以接入更完整的本地搜索方案。</p>
-            </details>
+          <section id="vscode" data-title="如何配置 VSCode">
+            <h2>如何配置 VSCode</h2>
+            <p>
+              VSCode 里建议使用 OpenAI 官方 Codex 扩展。扩展会读取 Codex CLI 的共享配置，因此先完成上一节的 Codex CLI 配置，再安装 VSCode 扩展。
+            </p>
+            <div class="step-list">
+              <article class="step-card">
+                <div>
+                  <h3>确认 Codex CLI 配置可用</h3>
+                  <p>先在终端确认 Codex CLI 能正常启动，并且已经配置好 <code>~/.codex/config.toml</code> 与 <code>OPENAI_API_KEY</code>。</p>
+                  <pre><code>codex --version
+codex</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>安装官方 VSCode 扩展</h3>
+                  <p>打开 VSCode 扩展市场，搜索 <strong>Codex - OpenAI's coding agent</strong>，确认发布者为 <strong>OpenAI</strong> 后安装。</p>
+                  <pre><code>扩展市场搜索：
+Codex - OpenAI's coding agent</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>打开 Codex 面板</h3>
+                  <p>安装完成后，VSCode 侧边栏会出现 Codex 图标。点击图标打开 Codex 面板，然后按提示启动会话。</p>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>检查共享配置</h3>
+                  <p>如果 VSCode 里没有使用你的自定义端点，回到终端检查 Codex 配置文件，重点确认 <code>model_provider</code>、<code>base_url</code> 和 <code>env_key</code>。</p>
+                  <pre><code># ~/.codex/config.toml
+model_provider = "ojbk"
+
+[model_providers.ojbk]
+base_url = "https://ojbkapi.com"
+env_key = "OPENAI_API_KEY"</code></pre>
+                </div>
+              </article>
+
+              <article class="step-card">
+                <div>
+                  <h3>常见问题</h3>
+                  <p>如果扩展无法连接，优先检查 VSCode 是否继承了终端环境变量。必要时重启 VSCode，或在系统 Shell 配置文件里长期保存 <code>OPENAI_API_KEY</code>。</p>
+                  <pre><code># zsh 示例
+echo 'export OPENAI_API_KEY="sk-*********"' >> ~/.zshrc
+source ~/.zshrc</code></pre>
+                </div>
+              </article>
+            </div>
           </section>
 
-          <section id="pages" data-title="发布到 GitHub Pages">
-            <h2>发布到 GitHub Pages</h2>
-            <p>上传到 GitHub 后，在仓库设置中开启 Pages：</p>
-            <ol>
-              <li>进入仓库的 <strong>Settings</strong>。</li>
-              <li>打开 <strong>Pages</strong>。</li>
-              <li>Source 选择 <strong>Deploy from a branch</strong>。</li>
-              <li>Branch 选择 <strong>main</strong>，目录选择 <strong>/root</strong>。</li>
-              <li>保存后等待 GitHub 发布。</li>
-            </ol>
-            <p>发布完成后的访问地址通常是：</p>
-            <pre><code>https://你的用户名.github.io/仓库名/</code></pre>
+          <section id="openclaw" data-title="如何配置 OpenClaw 小龙虾">
+            <h2>如何配置 OpenClaw【小龙虾】</h2>
+            <div class="step-list compact">
+              <article class="step-card">
+                <div>
+                  <h3>输入命令</h3>
+                  <p>在已经安装的小龙虾中，直接输入命令修改配置。</p>
+                  <pre><code># 修改 OpenClaw 配置
+openclaw configure</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择配置项</h3>
+                  <p>选择 <strong>Model (Pick provider + credentials)</strong>。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择自定义服务商</h3>
+                  <p>选择 <strong>Custom Provider (Any OpenAI or Anthropic compatible endpoint)</strong>。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>配置 API Base URL</h3>
+                  <pre><code>https://ojbkapi.com/v1</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>粘贴 API Key</h3>
+                  <p>选择 <strong>Paste API key now (Stores the key directly in OpenClaw config)</strong>，然后粘贴后台创建的 API Key。</p>
+                  <pre><code>sk-*********</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择 API 端点</h3>
+                  <p>选择 <strong>OpenAI-compatible (Uses /chat/completions)</strong>。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择模型</h3>
+                  <p>粘贴模型名称。</p>
+                  <pre><code>gpt-5.4</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>完成配置</h3>
+                  <p>后续一直回车即可。出现 <code>Configured custom provider: *************/gpt-5.4</code>，说明已经配置成功。再次出现 <strong>Select sections to configure</strong> 时，选择 <strong>Continue</strong> 结束配置。</p>
+                </div>
+              </article>
+            </div>
           </section>
         </article>
       </main>
