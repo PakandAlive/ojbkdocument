@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>产品说明文档</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">D</div>
+          <div>
+            <strong>产品说明文档</strong>
+            <span>v1.0 测试版</span>
+          </div>
+        </div>
+
+        <label class="search">
+          <span>搜索文档</span>
+          <input id="searchInput" type="search" placeholder="输入关键词..." autocomplete="off" />
+        </label>
+
+        <nav class="toc" aria-label="文档目录">
+          <a href="#intro" class="active">快速开始</a>
+          <a href="#install">安装与部署</a>
+          <a href="#config">基础配置</a>
+          <a href="#workflow">使用流程</a>
+          <a href="#faq">常见问题</a>
+          <a href="#pages">发布到 GitHub Pages</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <button class="menu-button" id="menuButton" type="button" aria-label="打开目录">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <span>产品说明文档</span>
+        </header>
+
+        <article>
+          <section id="intro" data-title="快速开始">
+            <p class="eyebrow">指南</p>
+            <h1>快速开始</h1>
+            <p class="lead">
+              这是一份 GitBook 风格的静态说明文档示例。你可以直接修改 HTML 内容，也可以后续迁移到
+              VitePress、Docusaurus 或 MkDocs Material。
+            </p>
+            <div class="notice">
+              当前版本不需要服务器，直接打开 <code>index.html</code> 就能预览，也可以部署到 GitHub Pages。
+            </div>
+          </section>
+
+          <section id="install" data-title="安装与部署">
+            <h2>安装与部署</h2>
+            <p>这个测试版没有依赖，不需要执行安装命令。目录结构如下：</p>
+            <pre><code>gitbook-docs-demo/
+├── index.html
+├── README.md
+└── assets/
+    ├── app.js
+    └── styles.css</code></pre>
+          </section>
+
+          <section id="config" data-title="基础配置">
+            <h2>基础配置</h2>
+            <p>你可以优先修改这些内容：</p>
+            <ul>
+              <li>文档标题：修改 <code>index.html</code> 里的 <code>产品说明文档</code></li>
+              <li>左侧目录：修改 <code>&lt;nav class="toc"&gt;</code> 下的链接</li>
+              <li>正文内容：按 <code>&lt;section&gt;</code> 追加章节</li>
+              <li>主题样式：修改 <code>assets/styles.css</code></li>
+            </ul>
+          </section>
+
+          <section id="workflow" data-title="使用流程">
+            <h2>使用流程</h2>
+            <ol>
+              <li>先把每个章节的大纲写清楚。</li>
+              <li>再补充截图、配置示例和常见错误说明。</li>
+              <li>最后提交到 GitHub 仓库并开启 GitHub Pages。</li>
+            </ol>
+          </section>
+
+          <section id="faq" data-title="常见问题">
+            <h2>常见问题</h2>
+            <details open>
+              <summary>是否需要服务器？</summary>
+              <p>不需要。GitHub Pages 会托管静态网站。</p>
+            </details>
+            <details>
+              <summary>是否可以绑定自己的域名？</summary>
+              <p>可以。GitHub Pages 支持自定义域名，后续在仓库设置里配置即可。</p>
+            </details>
+            <details>
+              <summary>是否支持搜索？</summary>
+              <p>当前示例提供前端页面内搜索。正式文档站可以接入更完整的本地搜索方案。</p>
+            </details>
+          </section>
+
+          <section id="pages" data-title="发布到 GitHub Pages">
+            <h2>发布到 GitHub Pages</h2>
+            <p>上传到 GitHub 后，在仓库设置中开启 Pages：</p>
+            <ol>
+              <li>进入仓库的 <strong>Settings</strong>。</li>
+              <li>打开 <strong>Pages</strong>。</li>
+              <li>Source 选择 <strong>Deploy from a branch</strong>。</li>
+              <li>Branch 选择 <strong>main</strong>，目录选择 <strong>/root</strong>。</li>
+              <li>保存后等待 GitHub 发布。</li>
+            </ol>
+            <p>发布完成后的访问地址通常是：</p>
+            <pre><code>https://你的用户名.github.io/仓库名/</code></pre>
+          </section>
+        </article>
+      </main>
+    </div>
+
+    <script src="assets/app.js"></script>
+  </body>
+</html>
