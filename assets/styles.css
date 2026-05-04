@@ -61,6 +61,17 @@ html[data-theme="dark"] {
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 body {
@@ -85,6 +96,8 @@ body {
   top: 0;
   height: 100vh;
   padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
   overflow-y: auto;
@@ -143,6 +156,28 @@ body {
   color: var(--accent-text);
   background: var(--accent-soft);
   border-color: var(--border);
+}
+
+.sidebar-tip {
+  margin: auto 0 0;
+  padding: 10px 12px;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.sidebar-tip span {
+  display: block;
+}
+
+.sidebar-tip strong {
+  color: var(--accent);
+  font-weight: 800;
 }
 
 .content {
