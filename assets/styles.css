@@ -229,7 +229,6 @@ section {
   border: 1px solid var(--border);
   border-radius: 28px;
   background: var(--panel-bg);
-  box-shadow: var(--shadow);
   overflow: hidden;
   scroll-margin-top: 88px;
 }
