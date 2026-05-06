@@ -353,6 +353,50 @@ p {
   overflow-wrap: anywhere;
 }
 
+.model-table {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--input-bg);
+}
+
+.model-table-head,
+.model-table-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.55fr) minmax(0, 0.8fr) minmax(220px, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.model-table-head {
+  color: var(--subtle);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.model-table-row {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.model-table-row:last-child {
+  border-bottom: 0;
+}
+
+.model-table-row code {
+  width: fit-content;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.model-table-head span:last-child,
+.model-table-row span:last-child {
+  white-space: nowrap;
+}
+
 .doc-image {
   margin: 22px 0 0;
 }
@@ -604,6 +648,12 @@ details p {
 
   .url-list {
     grid-template-columns: 1fr;
+  }
+
+  .model-table-head,
+  .model-table-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 
   .step-card {
