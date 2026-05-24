@@ -468,6 +468,10 @@ p {
   margin-bottom: 0;
 }
 
+.after-code-note {
+  margin-top: 16px;
+}
+
 .notice {
   margin-top: 22px;
   padding: 14px 16px;
@@ -525,6 +529,11 @@ pre code {
   padding: 0;
   color: inherit;
   background: transparent;
+}
+
+.code-highlight {
+  color: var(--accent);
+  font-weight: 800;
 }
 
 .code-copy {

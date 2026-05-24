@@ -32,6 +32,7 @@
           <a href="#cli">配置 Codex CLI / Claude Code CLI</a>
           <a href="#vscode">如何配置 VSCode</a>
           <a href="#openclaw">如何配置 OpenClaw【小龙虾】</a>
+          <a href="#first-token-timeout">如何解决首Token请求时间过长</a>
         </nav>
 
         <p class="sidebar-tip">
@@ -130,7 +131,6 @@
                 alt="API 密钥创建页面截图"
                 loading="lazy"
               />
-              <figcaption>左侧菜单 API 密钥，点击创建密钥。</figcaption>
             </figure>
           </section>
 
@@ -143,7 +143,6 @@
                 alt="使用密钥获取配置代码页面截图"
                 loading="lazy"
               />
-              <figcaption>创建密钥后，点击使用密钥，获取配置代码。</figcaption>
             </figure>
           </section>
 
@@ -351,6 +350,42 @@ openclaw configure</code></pre>
                 <div>
                   <h3>完成配置</h3>
                   <p>后续一直回车即可。出现 <code>Configured custom provider: *************/gpt-5.4</code>，说明已经配置成功。再次出现 <strong>Select sections to configure</strong> 时，选择 <strong>Continue</strong> 结束配置。</p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="first-token-timeout" data-title="如何解决首Token请求时间过长">
+            <h2>如何解决首Token请求时间过长</h2>
+            <p>
+              由于最近出现大量首Token请求超过数百秒的情况，经核查似OpenAI新更新增加了对API请求的风控限制导致，如你在请求的过程中出现请求后长时间没有得到回复，并且查看请求记录，首Token时长超过100+秒。请参考如下解决方案。
+            </p>
+            <div class="step-list compact">
+              <article class="step-card">
+                <div>
+                  <h3>修改 Codex 配置文件</h3>
+                  <p>找到 <code>.codex/config.toml</code> 的配置文件。</p>
+                  <p>在 <code>.codex/config.toml</code> 的配置文件中增加 <code>supports_websockets = true</code> 和 <code>responses_websockets_v2 = true</code> 的参数配置。具体模板如下。</p>
+                  <pre><code>model_provider = "OpenAI"
+model = "gpt-5.5"
+review_model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+disable_response_storage = true
+network_access = "enabled"
+windows_wsl_setup_acknowledged = true
+model_context_window = 1000000
+model_auto_compact_token_limit = 900000
+
+[model_providers.OpenAI]
+name = "OpenAI"
+base_url = "https://ojbkapi.com"
+wire_api = "responses"
+<span class="code-highlight">supports_websockets = true</span>
+requires_openai_auth = true
+
+[features]
+<span class="code-highlight">responses_websockets_v2 = true</span></code></pre>
+                  <p class="after-code-note">若配置成功，后台请求记录的请求类型会从 <code>流式</code> 修改为 <code>WS</code>，证明已经配置成功。</p>
                 </div>
               </article>
             </div>
