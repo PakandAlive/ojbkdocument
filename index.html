@@ -32,6 +32,7 @@
           <a href="#cli">配置 Codex CLI / Claude Code CLI</a>
           <a href="#vscode">如何配置 VSCode</a>
           <a href="#openclaw">如何配置 OpenClaw【小龙虾】</a>
+          <a href="#hermes">如何配置 Hermes Agent</a>
           <a href="#first-token-timeout">如何解决首Token请求时间过长</a>
         </nav>
 
@@ -77,24 +78,24 @@
                 <span>推理强度</span>
               </div>
               <div class="model-table-row">
-                <span>GPT-5.4</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.4">gpt-5.4</code>
-                <span>支持：low / medium / high / xhigh</span>
+                <span>GPT-5.6 Sol</span>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-sol">gpt-5.6-sol</code>
+                <span>支持：none / low / medium / high / xhigh / max</span>
               </div>
               <div class="model-table-row">
-                <span>GPT-5.4 Mini</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.4-mini">gpt-5.4-mini</code>
-                <span>支持：low / medium / high / xhigh</span>
+                <span>GPT-5.6 Terra</span>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-terra">gpt-5.6-terra</code>
+                <span>支持：none / low / medium / high / xhigh / max</span>
+              </div>
+              <div class="model-table-row">
+                <span>GPT-5.6 Luna</span>
+                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-luna">gpt-5.6-luna</code>
+                <span>支持：none / low / medium / high / xhigh / max</span>
               </div>
               <div class="model-table-row">
                 <span>GPT-5.5</span>
                 <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.5">gpt-5.5</code>
                 <span>支持：low / medium / high / xhigh</span>
-              </div>
-              <div class="model-table-row">
-                <span>GPT-image</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-image-2">gpt-image-2</code>
-                <span>仅支持图片生成，不支持批量，10$/张，不建议使用</span>
               </div>
             </div>
           </section>
@@ -327,6 +328,85 @@ openclaw configure</code></pre>
                 <div>
                   <h3>完成配置</h3>
                   <p>后续一直回车即可。出现 <code>Configured custom provider: *************/gpt-5.4</code>，说明已经配置成功。再次出现 <strong>Select sections to configure</strong> 时，选择 <strong>Continue</strong> 结束配置。</p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="hermes" data-title="如何配置 Hermes Agent">
+            <h2>如何配置 Hermes Agent</h2>
+            <p>Hermes Agent 支持自定义 OpenAI 兼容端点。通过官方模型向导填写 API Base URL、API Key 和模型，即可接入本站服务。</p>
+            <div class="step-list compact">
+              <article class="step-card">
+                <div>
+                  <h3>安装 Hermes Agent</h3>
+                  <p>在 Linux、macOS 或 WSL2 终端中运行官方安装命令。</p>
+                  <pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>重新加载 Shell</h3>
+                  <p>安装完成后重新加载当前 Shell 配置。zsh 使用 <code>~/.zshrc</code>，Bash 使用 <code>~/.bashrc</code>，然后确认 Hermes 命令可以正常使用。</p>
+                  <pre><code># zsh
+source ~/.zshrc
+
+# Bash
+source ~/.bashrc
+
+hermes --help</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>打开模型配置向导</h3>
+                  <pre><code>hermes model</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择自定义服务商</h3>
+                  <p>在服务商列表中选择 <strong>Custom Provider</strong>，进入自定义 OpenAI 兼容端点配置。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>填写 API Base URL</h3>
+                  <pre><code>https://ojbkapi.com/v1</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>填写 API Key</h3>
+                  <p>粘贴后台创建的 API Key。Hermes 会把密钥保存到自己的环境配置中。</p>
+                  <pre><code>sk-*********</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择 API 兼容模式</h3>
+                  <p>选择 <strong>Responses / Codex</strong>，使用 <code>/responses</code> 接口和 Codex 兼容的工具调用能力。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>选择模型</h3>
+                  <p>如果向导成功读取模型列表，直接选择需要的模型；也可以手动输入模型 ID。</p>
+                  <pre><code>gpt-5.6-sol</code></pre>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>完成剩余配置</h3>
+                  <p>上下文长度留空以使用自动检测，显示名称填写 <strong>OJBK API</strong>，然后完成向导。</p>
+                </div>
+              </article>
+              <article class="step-card">
+                <div>
+                  <h3>检查并启动</h3>
+                  <p>先运行诊断，确认配置与端点连接正常，再启动 Hermes Agent。</p>
+                  <pre><code>hermes doctor
+hermes</code></pre>
                 </div>
               </article>
             </div>
