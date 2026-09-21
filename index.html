@@ -1,102 +1,123 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>配置文档</title>
     <meta name="description" content="支持 light 与 dark 主题的 GitBook 风格产品说明文档。" />
     <script>
+      // 主题参数解析：?theme= / ?mode= / ?color_scheme= / ?color-scheme= / ?appearance=
+      // 支持 dark / night / black 与 light / day / white 别名，并校验 localStorage 存量值。
       (() => {
-        const params = new URLSearchParams(window.location.search);
+        const aliases = {
+          dark: "dark",
+          night: "dark",
+          black: "dark",
+          light: "light",
+          day: "light",
+          white: "light",
+        };
         const keys = ["theme", "mode", "color_scheme", "color-scheme", "appearance"];
-        const value = keys.map((key) => params.get(key)).find(Boolean);
-        const normalized = value && value.toLowerCase() === "dark" ? "dark" : value && value.toLowerCase() === "light" ? "light" : "";
-        const stored = localStorage.getItem("docs-theme");
+        const params = new URLSearchParams(window.location.search);
+        const readAlias = (raw) => (raw && aliases[raw.toLowerCase()]) || "";
+
+        let theme = "";
+        for (const key of keys) {
+          theme = readAlias(params.get(key));
+          if (theme) break;
+        }
+
+        const stored = readAlias(localStorage.getItem("docs-theme"));
         const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        document.documentElement.dataset.theme = normalized || stored || system;
+        document.documentElement.dataset.theme = theme || stored || system;
       })();
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
-    <div class="app">
-      <aside class="sidebar" id="sidebar">
-        <label class="search">
-          <input id="searchInput" type="search" placeholder="输入关键词..." autocomplete="off" />
-        </label>
+    <div class="wrap">
+      <div class="doc-layout">
+        <aside class="doc-nav" id="docNav" aria-label="文档目录">
+          <div class="doc-search">
+            <input id="searchInput" type="search" placeholder="输入关键词..." autocomplete="off" aria-label="搜索文档" />
+          </div>
 
-        <nav class="toc" aria-label="文档目录">
+          <div class="dn-head">开始</div>
           <a href="#base-url" class="active">官方 API Base URL</a>
           <a href="#apikey">如何获取 APIKey</a>
           <a href="#config">如何获取配置</a>
+
+          <div class="dn-head">客户端配置</div>
           <a href="#cli">配置 Codex CLI / Claude Code CLI</a>
           <a href="#vscode">如何配置 VSCode</a>
           <a href="#openclaw">如何配置 OpenClaw【小龙虾】</a>
           <a href="#hermes">如何配置 Hermes Agent</a>
+
+          <div class="dn-head">故障排查</div>
           <a href="#first-token-timeout">如何解决首Token请求时间过长</a>
-        </nav>
 
-        <p class="sidebar-tip">
-          <span>配置中未找到的问题，或者报错信息</span>
-          <span>
-            请点击 <strong>AI支持</strong> 菜单，发送给 <strong>AI支持</strong>，AI 会结合你的具体情况帮你解决。
-          </span>
-        </p>
-      </aside>
+          <p class="sidebar-tip">
+            <span>遇问题或报错，点击 <strong>AI支持</strong> 帮你解决。</span>
+          </p>
+        </aside>
 
-      <main class="content">
-        <header class="topbar">
-          <button class="menu-button" id="menuButton" type="button" aria-label="打开目录">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          <span>配置文档</span>
-        </header>
+        <main class="doc-body">
+          <section id="base-url" data-title="官方 API Base URL">
+            <header class="doc-head">
+              <p class="eyebrow">DOCUMENTATION</p>
+              <h1>官方 API <em>Base URL</em></h1>
+              <p class="lead">
+                根据客户端或工具的兼容要求，选择对应的 API Base URL 填入配置文件或配置向导。
+              </p>
+              <div class="doc-actions">
+                <a class="btn btn-primary" href="#apikey">获取 APIKey</a>
+                <a class="btn btn-outline" href="#cli">查看 CLI 配置</a>
+              </div>
+            </header>
 
-        <article>
-          <section class="hero-section" id="base-url" data-title="官方 API Base URL">
-            <p class="eyebrow">DOCUMENTATION</p>
-            <h1>官方 API <em>Base URL</em></h1>
-            <p class="lead">
-              根据客户端或工具的兼容要求，选择对应的 API Base URL 填入配置文件或配置向导。
-            </p>
-            <div class="hero-actions">
-              <a class="action-link action-link-primary" href="#apikey">获取 APIKey</a>
-              <a class="action-link" href="#cli">查看 CLI 配置</a>
+            <div class="url-box" aria-label="官方 API Base URL">
+              <strong>官方端点</strong>
+              <code class="copy-inline" tabindex="0" role="button" aria-label="复制官方端点">https://ojbkapi.com</code>
             </div>
-            <div class="url-list" aria-label="官方 API Base URL">
-              <div>
-                <strong>官方端点</strong>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制官方端点">https://ojbkapi.com</code>
-              </div>
-            </div>
-            <div class="model-table" aria-label="可用模型">
-              <div class="model-table-head">
-                <span>可用模型</span>
-                <span>模型 ID</span>
-                <span>推理强度</span>
-              </div>
-              <div class="model-table-row">
-                <span>GPT-5.6 Sol</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-sol">gpt-5.6-sol</code>
-                <span>支持：none / low / medium / high / xhigh / max</span>
-              </div>
-              <div class="model-table-row">
-                <span>GPT-5.6 Terra</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-terra">gpt-5.6-terra</code>
-                <span>支持：none / low / medium / high / xhigh / max</span>
-              </div>
-              <div class="model-table-row">
-                <span>GPT-5.6 Luna</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-luna">gpt-5.6-luna</code>
-                <span>支持：none / low / medium / high / xhigh / max</span>
-              </div>
-              <div class="model-table-row">
-                <span>GPT-5.5</span>
-                <code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.5">gpt-5.5</code>
-                <span>支持：low / medium / high / xhigh</span>
-              </div>
+
+              <div class="tableframe">
+              <table class="data-table" aria-label="可用模型">
+                <thead>
+                  <tr>
+                    <th>可用模型</th>
+                    <th>模型 ID</th>
+                    <th>推理强度</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="cell-name">GPT-5.6 Sol</td>
+                    <td><code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-sol">gpt-5.6-sol</code></td>
+                    <td class="cell-desc">支持：none / low / medium / high / xhigh / max</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-name">GPT-5.6 Terra</td>
+                    <td><code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-terra">gpt-5.6-terra</code></td>
+                    <td class="cell-desc">支持：none / low / medium / high / xhigh / max</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-name">GPT-5.6 Luna</td>
+                    <td><code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.6-luna">gpt-5.6-luna</code></td>
+                    <td class="cell-desc">支持：none / low / medium / high / xhigh / max</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-name">GPT-5.5</td>
+                    <td><code class="copy-inline" tabindex="0" role="button" aria-label="复制模型 gpt-5.5">gpt-5.5</code></td>
+                    <td class="cell-desc">支持：low / medium / high / xhigh</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 
@@ -129,47 +150,40 @@
             <p>
               建议先安装并验证 CLI，再分别配置 Codex CLI 与 Claude Code CLI。两者使用的配置方式不同，不建议混在同一个配置文件里。
             </p>
-            <div class="step-list">
-              <article class="step-card">
-                <div>
-                  <h3>准备 Node.js 环境</h3>
-                  <p>确认本机已安装 Node.js 与 npm。Claude Code 官方要求 Node.js 18 或更高版本。</p>
-                  <pre><code>node -v
+            <div class="steps">
+              <div class="step">
+                <h3>准备 Node.js 环境</h3>
+                <p>确认本机已安装 Node.js 与 npm。Claude Code 官方要求 Node.js 18 或更高版本。</p>
+                <pre data-lang="bash"><code>node -v
 npm -v</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>安装 CLI</h3>
-                  <p>按需安装 Codex CLI 和 Claude Code CLI。</p>
-                  <pre><code># 安装 Codex CLI
+              <div class="step">
+                <h3>安装 CLI</h3>
+                <p>按需安装 Codex CLI 和 Claude Code CLI。</p>
+                <pre data-lang="bash"><code># 安装 Codex CLI
 npm i -g @openai/codex
 
 # 安装 Claude Code CLI
 npm install -g @anthropic-ai/claude-code</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>验证安装结果</h3>
-                  <p>确认命令可以正常被系统识别。</p>
-                  <pre><code>codex --version
+              <div class="step">
+                <h3>验证安装结果</h3>
+                <p>确认命令可以正常被系统识别。</p>
+                <pre data-lang="bash"><code>codex --version
 claude --version</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>配置 Codex CLI</h3>
-                  <p>创建配置目录，打开或创建 Codex CLI 配置文件 <code>~/.codex/config.toml</code>，写入下面配置。</p>
-                  <pre><code>mkdir -p ~/.codex
+              <div class="step">
+                <h3>配置 Codex CLI</h3>
+                <p>创建配置目录，打开或创建 Codex CLI 配置文件 <code>~/.codex/config.toml</code>，写入下面配置。</p>
+                <pre data-lang="bash"><code>mkdir -p ~/.codex
 nano ~/.codex/config.toml</code></pre>
-                  <pre><code># ~/.codex/config.toml
+                <pre data-lang="toml"><code># ~/.codex/config.toml
 model_provider = "ojbk"
-model = "gpt-5.4"
-review_model = "gpt-5.4"
+model = "gpt-5.6-sol"
+review_model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
 disable_response_storage = true
 network_access = "enabled"
@@ -183,39 +197,32 @@ base_url = "https://ojbkapi.com"
 env_key = "OPENAI_API_KEY"
 wire_api = "responses"
 requires_openai_auth = true</code></pre>
-                  <p>如果要使用其他可用端点，把 <code>base_url</code> 替换成对应地址即可。</p>
-                </div>
-              </article>
+                <p>如果要使用其他可用端点，把 <code>base_url</code> 替换成对应地址即可。</p>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>配置 Codex CLI 密钥</h3>
-                  <p>把后台创建的 API Key 配置为环境变量。临时测试可以直接在当前终端执行；长期使用建议写入你的 Shell 配置文件。</p>
-                  <pre><code>export OPENAI_API_KEY="sk-*********"</code></pre>
-                </div>
-              </article>
+              <div class="step">
+                <h3>配置 Codex CLI 密钥</h3>
+                <p>把后台创建的 API Key 配置为环境变量。临时测试可以直接在当前终端执行；长期使用建议写入你的 Shell 配置文件。</p>
+                <pre data-lang="bash"><code>export OPENAI_API_KEY="sk-*********"</code></pre>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>配置 Claude Code CLI</h3>
-                  <p>Claude Code CLI 不读取 Codex 的 TOML 配置。目标端点需要支持 Claude Code 使用的 Anthropic Messages API，或由网关完成协议转换。</p>
-                  <pre><code>export ANTHROPIC_BASE_URL="https://ojbkapi.com"
+              <div class="step">
+                <h3>配置 Claude Code CLI</h3>
+                <p>Claude Code CLI 不读取 Codex 的 TOML 配置。目标端点需要支持 Claude Code 使用的 Anthropic Messages API，或由网关完成协议转换。</p>
+                <pre data-lang="bash"><code>export ANTHROPIC_BASE_URL="https://ojbkapi.com"
 export ANTHROPIC_AUTH_TOKEN="sk-*********"
-export ANTHROPIC_MODEL="gpt-5.4"</code></pre>
-                </div>
-              </article>
+export ANTHROPIC_MODEL="gpt-5.6-sol"</code></pre>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>启动验证</h3>
-                  <p>任选其一运行，确认 CLI 能正常启动并访问配置好的端点。</p>
-                  <pre><code># 启动 Codex
+              <div class="step">
+                <h3>启动验证</h3>
+                <p>任选其一运行，确认 CLI 能正常启动并访问配置好的端点。</p>
+                <pre data-lang="bash"><code># 启动 Codex
 codex
 
 # 启动 Claude Code
 claude</code></pre>
-                </div>
-              </article>
+              </div>
             </div>
           </section>
 
@@ -224,191 +231,145 @@ claude</code></pre>
             <p>
               VSCode 里建议使用 OpenAI 官方 Codex 扩展。扩展会读取 Codex CLI 的共享配置，因此先完成上一节的 Codex CLI 配置，再安装 VSCode 扩展。
             </p>
-            <div class="step-list">
-              <article class="step-card">
-                <div>
-                  <h3>确认 Codex CLI 配置可用</h3>
-                  <p>先在终端确认 Codex CLI 能正常启动，并且已经配置好 <code>~/.codex/config.toml</code> 与 <code>OPENAI_API_KEY</code>。</p>
-                  <pre><code>codex --version
+            <div class="steps">
+              <div class="step">
+                <h3>确认 Codex CLI 配置可用</h3>
+                <p>先在终端确认 Codex CLI 能正常启动，并且已经配置好 <code>~/.codex/config.toml</code> 与 <code>OPENAI_API_KEY</code>。</p>
+                <pre data-lang="bash"><code>codex --version
 codex</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>安装官方 VSCode 扩展</h3>
-                  <p>打开 VSCode 扩展市场，搜索 <strong>Codex - OpenAI's coding agent</strong>，确认发布者为 <strong>OpenAI</strong> 后安装。</p>
-                  <pre><code>扩展市场搜索：
+              <div class="step">
+                <h3>安装官方 VSCode 扩展</h3>
+                <p>打开 VSCode 扩展市场，搜索 <strong>Codex - OpenAI's coding agent</strong>，确认发布者为 <strong>OpenAI</strong> 后安装。</p>
+                <pre data-lang="text"><code>扩展市场搜索：
 Codex - OpenAI's coding agent</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>打开 Codex 面板</h3>
-                  <p>安装完成后，VSCode 侧边栏会出现 Codex 图标。点击图标打开 Codex 面板，然后按提示启动会话。</p>
-                </div>
-              </article>
+              <div class="step">
+                <h3>打开 Codex 面板</h3>
+                <p>安装完成后，VSCode 侧边栏会出现 Codex 图标。点击图标打开 Codex 面板，然后按提示启动会话。</p>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>检查共享配置</h3>
-                  <p>如果 VSCode 里没有使用你的自定义端点，回到终端检查 Codex 配置文件，重点确认 <code>model_provider</code>、<code>base_url</code> 和 <code>env_key</code>。</p>
-                  <pre><code># ~/.codex/config.toml
+              <div class="step">
+                <h3>检查共享配置</h3>
+                <p>如果 VSCode 里没有使用你的自定义端点，回到终端检查 Codex 配置文件，重点确认 <code>model_provider</code>、<code>base_url</code> 和 <code>env_key</code>。</p>
+                <pre data-lang="toml"><code># ~/.codex/config.toml
 model_provider = "ojbk"
 
 [model_providers.ojbk]
 base_url = "https://ojbkapi.com"
 env_key = "OPENAI_API_KEY"</code></pre>
-                </div>
-              </article>
+              </div>
 
-              <article class="step-card">
-                <div>
-                  <h3>常见问题</h3>
-                  <p>如果扩展无法连接，优先检查 VSCode 是否继承了终端环境变量。必要时重启 VSCode，或在系统 Shell 配置文件里长期保存 <code>OPENAI_API_KEY</code>。</p>
-                  <pre><code># zsh 示例
+              <div class="step">
+                <h3>常见问题</h3>
+                <p>如果扩展无法连接，优先检查 VSCode 是否继承了终端环境变量。必要时重启 VSCode，或在系统 Shell 配置文件里长期保存 <code>OPENAI_API_KEY</code>。</p>
+                <pre data-lang="bash"><code># zsh 示例
 echo 'export OPENAI_API_KEY="sk-*********"' >> ~/.zshrc
 source ~/.zshrc</code></pre>
-                </div>
-              </article>
+              </div>
             </div>
           </section>
 
           <section id="openclaw" data-title="如何配置 OpenClaw 小龙虾">
             <h2>如何配置 OpenClaw【小龙虾】</h2>
-            <div class="step-list compact">
-              <article class="step-card">
-                <div>
-                  <h3>输入命令</h3>
-                  <p>在已经安装的小龙虾中，直接输入命令修改配置。</p>
-                  <pre><code># 修改 OpenClaw 配置
+            <div class="steps compact">
+              <div class="step">
+                <h3>输入命令</h3>
+                <p>在已经安装的小龙虾中，直接输入命令修改配置。</p>
+                <pre data-lang="bash"><code># 修改 OpenClaw 配置
 openclaw configure</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择配置项</h3>
-                  <p>选择 <strong>Model (Pick provider + credentials)</strong>。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择自定义服务商</h3>
-                  <p>选择 <strong>Custom Provider (Any OpenAI or Anthropic compatible endpoint)</strong>。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>配置 API Base URL</h3>
-                  <pre><code>https://ojbkapi.com/v1</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>粘贴 API Key</h3>
-                  <p>选择 <strong>Paste API key now (Stores the key directly in OpenClaw config)</strong>，然后粘贴后台创建的 API Key。</p>
-                  <pre><code>sk-*********</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择 API 端点</h3>
-                  <p>选择 <strong>OpenAI-compatible (Uses /chat/completions)</strong>。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择模型</h3>
-                  <p>粘贴模型名称。</p>
-                  <pre><code>gpt-5.4</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>完成配置</h3>
-                  <p>后续一直回车即可。出现 <code>Configured custom provider: *************/gpt-5.4</code>，说明已经配置成功。再次出现 <strong>Select sections to configure</strong> 时，选择 <strong>Continue</strong> 结束配置。</p>
-                </div>
-              </article>
+              </div>
+              <div class="step">
+                <h3>选择配置项</h3>
+                <p>选择 <strong>Model (Pick provider + credentials)</strong>。</p>
+              </div>
+              <div class="step">
+                <h3>选择自定义服务商</h3>
+                <p>选择 <strong>Custom Provider (Any OpenAI or Anthropic compatible endpoint)</strong>。</p>
+              </div>
+              <div class="step">
+                <h3>配置 API Base URL</h3>
+                <pre data-lang="text"><code>https://ojbkapi.com/v1</code></pre>
+              </div>
+              <div class="step">
+                <h3>粘贴 API Key</h3>
+                <p>选择 <strong>Paste API key now (Stores the key directly in OpenClaw config)</strong>，然后粘贴后台创建的 API Key。</p>
+                <pre data-lang="text"><code>sk-*********</code></pre>
+              </div>
+              <div class="step">
+                <h3>选择 API 端点</h3>
+                <p>选择 <strong>OpenAI-compatible (Uses /chat/completions)</strong>。</p>
+              </div>
+              <div class="step">
+                <h3>选择模型</h3>
+                <p>粘贴模型名称。</p>
+                <pre data-lang="text"><code>gpt-5.6-sol</code></pre>
+              </div>
+              <div class="step">
+                <h3>完成配置</h3>
+                <p>后续一直回车即可。出现 <code>Configured custom provider: *************/gpt-5.6-sol</code>，说明已经配置成功。再次出现 <strong>Select sections to configure</strong> 时，选择 <strong>Continue</strong> 结束配置。</p>
+              </div>
             </div>
           </section>
 
           <section id="hermes" data-title="如何配置 Hermes Agent">
             <h2>如何配置 Hermes Agent</h2>
             <p>Hermes Agent 支持自定义 OpenAI 兼容端点。通过官方模型向导填写 API Base URL、API Key 和模型，即可接入本站服务。</p>
-            <div class="step-list compact">
-              <article class="step-card">
-                <div>
-                  <h3>安装 Hermes Agent</h3>
-                  <p>在 Linux、macOS 或 WSL2 终端中运行官方安装命令。</p>
-                  <pre><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>重新加载 Shell</h3>
-                  <p>安装完成后重新加载当前 Shell 配置。zsh 使用 <code>~/.zshrc</code>，Bash 使用 <code>~/.bashrc</code>，然后确认 Hermes 命令可以正常使用。</p>
-                  <pre><code># zsh
+            <div class="steps compact">
+              <div class="step">
+                <h3>安装 Hermes Agent</h3>
+                <p>在 Linux、macOS 或 WSL2 终端中运行官方安装命令。</p>
+                <pre data-lang="bash"><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre>
+              </div>
+              <div class="step">
+                <h3>重新加载 Shell</h3>
+                <p>安装完成后重新加载当前 Shell 配置。zsh 使用 <code>~/.zshrc</code>，Bash 使用 <code>~/.bashrc</code>，然后确认 Hermes 命令可以正常使用。</p>
+                <pre data-lang="bash"><code># zsh
 source ~/.zshrc
 
 # Bash
 source ~/.bashrc
 
 hermes --help</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>打开模型配置向导</h3>
-                  <pre><code>hermes model</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择自定义服务商</h3>
-                  <p>在服务商列表中选择 <strong>Custom Provider</strong>，进入自定义 OpenAI 兼容端点配置。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>填写 API Base URL</h3>
-                  <pre><code>https://ojbkapi.com/v1</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>填写 API Key</h3>
-                  <p>粘贴后台创建的 API Key。Hermes 会把密钥保存到自己的环境配置中。</p>
-                  <pre><code>sk-*********</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择 API 兼容模式</h3>
-                  <p>选择 <strong>Responses / Codex</strong>，使用 <code>/responses</code> 接口和 Codex 兼容的工具调用能力。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>选择模型</h3>
-                  <p>如果向导成功读取模型列表，直接选择需要的模型；也可以手动输入模型 ID。</p>
-                  <pre><code>gpt-5.6-sol</code></pre>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>完成剩余配置</h3>
-                  <p>上下文长度留空以使用自动检测，显示名称填写 <strong>OJBK API</strong>，然后完成向导。</p>
-                </div>
-              </article>
-              <article class="step-card">
-                <div>
-                  <h3>检查并启动</h3>
-                  <p>先运行诊断，确认配置与端点连接正常，再启动 Hermes Agent。</p>
-                  <pre><code>hermes doctor
+              </div>
+              <div class="step">
+                <h3>打开模型配置向导</h3>
+                <pre data-lang="bash"><code>hermes model</code></pre>
+              </div>
+              <div class="step">
+                <h3>选择自定义服务商</h3>
+                <p>在服务商列表中选择 <strong>Custom Provider</strong>，进入自定义 OpenAI 兼容端点配置。</p>
+              </div>
+              <div class="step">
+                <h3>填写 API Base URL</h3>
+                <pre data-lang="text"><code>https://ojbkapi.com/v1</code></pre>
+              </div>
+              <div class="step">
+                <h3>填写 API Key</h3>
+                <p>粘贴后台创建的 API Key。Hermes 会把密钥保存到自己的环境配置中。</p>
+                <pre data-lang="text"><code>sk-*********</code></pre>
+              </div>
+              <div class="step">
+                <h3>选择 API 兼容模式</h3>
+                <p>选择 <strong>Responses / Codex</strong>，使用 <code>/responses</code> 接口和 Codex 兼容的工具调用能力。</p>
+              </div>
+              <div class="step">
+                <h3>选择模型</h3>
+                <p>如果向导成功读取模型列表，直接选择需要的模型；也可以手动输入模型 ID。</p>
+                <pre data-lang="text"><code>gpt-5.6-sol</code></pre>
+              </div>
+              <div class="step">
+                <h3>完成剩余配置</h3>
+                <p>上下文长度留空以使用自动检测，显示名称填写 <strong>OJBK API</strong>，然后完成向导。</p>
+              </div>
+              <div class="step">
+                <h3>检查并启动</h3>
+                <p>先运行诊断，确认配置与端点连接正常，再启动 Hermes Agent。</p>
+                <pre data-lang="bash"><code>hermes doctor
 hermes</code></pre>
-                </div>
-              </article>
+              </div>
             </div>
           </section>
 
@@ -417,15 +378,14 @@ hermes</code></pre>
             <p>
               由于最近出现大量首Token请求超过数百秒的情况，经核查似OpenAI新更新增加了对API请求的风控限制导致，如你在请求的过程中出现请求后长时间没有得到回复，并且查看请求记录，首Token时长超过100+秒。请参考如下解决方案。
             </p>
-            <div class="step-list compact">
-              <article class="step-card">
-                <div>
-                  <h3>修改 Codex 配置文件</h3>
-                  <p>找到 <code>.codex/config.toml</code> 的配置文件。</p>
-                  <p>在 <code>.codex/config.toml</code> 的配置文件中增加 <code>supports_websockets = true</code> 和 <code>responses_websockets_v2 = true</code> 的参数配置。具体模板如下。</p>
-                  <pre><code>model_provider = "OpenAI"
-model = "gpt-5.5"
-review_model = "gpt-5.5"
+            <div class="steps compact">
+              <div class="step">
+                <h3>修改 Codex 配置文件</h3>
+                <p>找到 <code>.codex/config.toml</code> 的配置文件。</p>
+                <p>在 <code>.codex/config.toml</code> 的配置文件中增加 <code>supports_websockets = true</code> 和 <code>responses_websockets_v2 = true</code> 的参数配置。具体模板如下。</p>
+                <pre data-lang="toml"><code>model_provider = "OpenAI"
+model = "gpt-5.6-sol"
+review_model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"
 disable_response_storage = true
 network_access = "enabled"
@@ -442,13 +402,12 @@ requires_openai_auth = true
 
 [features]
 <span class="code-highlight">responses_websockets_v2 = true</span></code></pre>
-                  <p class="after-code-note">若配置成功，后台请求记录的请求类型会从 <code>流式</code> 修改为 <code>WS</code>，证明已经配置成功。</p>
-                </div>
-              </article>
+                <p class="after-code-note">若配置成功，后台请求记录的请求类型会从 <code>流式</code> 修改为 <code>WS</code>，证明已经配置成功。</p>
+              </div>
             </div>
           </section>
-        </article>
-      </main>
+        </main>
+      </div>
     </div>
 
     <script src="assets/app.js"></script>
