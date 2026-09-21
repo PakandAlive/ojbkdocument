@@ -109,6 +109,34 @@ function escapeHtml(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// 页面会被内嵌到 iframe 中，异步剪贴板 API 受 Permissions Policy 限制，
+// 因此统一使用 execCommand 复制，复制完成后恢复原焦点。
+function writeClipboard(text) {
+  const active = document.activeElement;
+  const holder = document.createElement("textarea");
+  holder.value = text;
+  holder.setAttribute("readonly", "");
+  holder.style.position = "fixed";
+  holder.style.top = "-9999px";
+  holder.style.left = "-9999px";
+  document.body.appendChild(holder);
+
+  holder.focus();
+  holder.setSelectionRange(0, holder.value.length);
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  }
+
+  document.body.removeChild(holder);
+  if (active instanceof HTMLElement) active.focus();
+
+  return copied;
+}
+
 function highlightComments(code) {
   // 已有语法高亮的代码块保持原样，避免覆盖手工标注
   if (code.querySelector("span")) return;
@@ -144,14 +172,10 @@ function buildCodeBlock(pre) {
   button.textContent = "复制";
   button.setAttribute("aria-label", "复制代码");
 
-  button.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(code.textContent);
-      button.textContent = "已复制";
-      button.classList.add("is-copied");
-    } catch {
-      button.textContent = "复制失败";
-    }
+  button.addEventListener("click", () => {
+    const copied = writeClipboard(code.textContent);
+    button.textContent = copied ? "已复制" : "复制失败";
+    button.classList.toggle("is-copied", copied);
 
     window.setTimeout(() => {
       button.textContent = "复制";
@@ -170,20 +194,18 @@ document.querySelectorAll("pre").forEach(buildCodeBlock);
 // ---------- 内联复制 ----------
 
 document.querySelectorAll(".copy-inline").forEach((item) => {
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(item.textContent.trim());
+  const copy = () => {
+    if (writeClipboard(item.textContent.trim())) {
       item.classList.add("is-copied");
-    } catch {
-      item.classList.add("is-failed");
       window.setTimeout(() => {
-        item.classList.remove("is-failed");
+        item.classList.remove("is-copied");
       }, 900);
       return;
     }
 
+    item.classList.add("is-failed");
     window.setTimeout(() => {
-      item.classList.remove("is-copied");
+      item.classList.remove("is-failed");
     }, 900);
   };
 
